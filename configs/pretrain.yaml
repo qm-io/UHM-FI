@@ -1,0 +1,75 @@
+model_config: uhm_fi_resnet50.yaml
+
+data:
+  # Canonical NumPy-backed training manifest.
+  csv_path: ../data/pretrain.csv
+  image_column: path
+  text_column: report
+  split_column: split
+  fine_label_column: fine_multi_hot
+  coarse_label_column: coarse_multi_hot
+  cache_path_column: cache_path
+  cache_index_column: cache_index
+  train_split: train
+  validation_split: valid
+  strict_paths: true
+  # Retry only Pillow's explicit "image file is truncated" error. Other
+  # corrupt or unrecognized images still stop training with their full path.
+  allow_truncated_images: true
+  label_mode: both
+  source_column: source
+  include_sources: []
+  include_fine_labels: []
+  include_coarse_labels: []
+  label_filter_mode: any
+  sampling_strategy: head
+  sampling_seed: 42
+  image:
+    resize: 256
+    crop_size: 224
+    horizontal_flip: 0.5
+    normalize: half
+  loader:
+    batch_size: 128
+    # Two mmap readers saturated the full model in the local benchmark.
+    num_workers: 2
+    pin_memory: true
+    persistent_workers: true
+    prefetch_factor: 2
+
+optimizer:
+  name: adamw
+  learning_rate: 0.00005
+  weight_decay: 0.000001
+  beta1: 0.9
+  beta2: 0.999
+
+scheduler:
+  name: plateau
+  plateau_factor: 0.5
+  plateau_patience: 5
+  minimum_learning_rate: 0.0000001
+
+trainer:
+  output_dir: ../output/pretrain_full_50epoch_20260731
+  epochs: 50
+  device: cuda
+  seed: 42
+  deterministic: true
+  amp: true
+  amp_dtype: float16
+  gradient_clip: 0.25
+  gradient_accumulation: 1
+  log_every_steps: 50
+  validate_every_epochs: 1
+  save_every_epochs: 1
+  early_stopping_patience: 10
+
+wandb:
+  enabled: false
+  project: uhm-fi
+  entity: null
+  run_name: null
+  mode: online
+  tags: [pretraining]
+  notes: null

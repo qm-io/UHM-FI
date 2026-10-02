@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+data/
+output/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.npy
+*.npz
+*.dcm
+*.dicom
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+*.pdf
+wandb/
+# Internal revision/data audit helpers are not part of the public release.
+uhm_fi/audit.py
+uhm_fi/revision_audit.py
+tests/test_revision_audit.py

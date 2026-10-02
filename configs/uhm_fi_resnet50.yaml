@@ -1,0 +1,43 @@
+vision:
+  backbone: resnet50
+  pretrained: true
+  num_fine_labels: 10
+  num_coarse_labels: 4
+  condition_dim: 256
+  condition_hidden_dim: 512
+  condition_dropout: 0.1
+  embedding_dim: 512
+  condition_merge: mean
+  modulation_enabled: true
+  dynamic_conditions_enabled: true
+  modulation_variant: stable
+  modulation_mode: channel_spatial
+
+text:
+  backend: bioclinicalbert
+  model_name: emilyalsentzer/Bio_ClinicalBERT
+  pretrained: true
+  local_files_only: false
+  freeze_layers: [0, 1, 2, 3, 4, 5]
+  vocab_size: 30522
+  max_length: 128
+  hidden_dim: 256
+  transformer_layers: 2
+  attention_heads: 8
+  dropout: 0.1
+
+interleaving:
+  enabled: true
+  ratio: 0.25
+  strategy: mutual_information
+  training_only: true
+  detach_selection: true
+
+loss:
+  temperature: 0.1
+  condition_alpha: 0.7
+  condition_beta: 0.3
+  condition_weight: 1.0
+  condition_distribution: kl
+  condition_mse_weight: 1.0
+  condition_norm_weight: 0.0

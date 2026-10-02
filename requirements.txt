@@ -1,0 +1,13 @@
+torch>=2.3
+torchvision>=0.18
+transformers>=4.30
+numpy>=1.24
+Pillow>=10
+pydicom>=2.4
+pylibjpeg>=2.0
+pylibjpeg-libjpeg>=2.1
+pylibjpeg-openjpeg>=2.0
+pylibjpeg-rle>=2.0
+PyYAML>=6
+wandb==0.28.1
+pytest>=7

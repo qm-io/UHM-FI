@@ -1,0 +1,49 @@
+model_config: uhm_fi_resnet50.yaml
+pretrained_checkpoint: ./output/pretrain_full_50epoch_20260731/best.pt
+data:
+  csv_path: ./data/downstream/cbis_ddsm_cls.csv
+  image_column: path
+  label_column: label
+  split_column: split
+  train_split: train
+  validation_split: valid
+  test_split: test
+  train_fraction: 1.0
+  enforce_disjoint_paths: true
+  deduplicate_classification_paths: true
+  image:
+    resize: 256
+    crop_size: 224
+    horizontal_flip: 0.5
+    normalize: half
+  loader:
+    batch_size: 16
+    num_workers: 4
+    pin_memory: true
+    persistent_workers: true
+    prefetch_factor: 2
+  cache_path_column: cache_path
+  cache_index_column: cache_index
+task:
+  type: classification
+  num_classes: 1
+  protocol: linear_probe
+  feature_source: global_feature
+optimizer:
+  name: adam
+  learning_rate: 0.0005
+  weight_decay: 1.0e-06
+scheduler:
+  name: plateau
+trainer:
+  output_dir: ./output/downstream/cbis_cls_linear
+  epochs: 50
+  device: cuda
+  seed: 42
+  amp: true
+  # Keep the strict linear probe numerically stable across all encoder
+  # ablations while retaining FP16 throughput.
+  amp_init_scale: 8192.0
+  gradient_clip: 0.25
+  early_stopping_patience: 10
+  log_every_steps: 50

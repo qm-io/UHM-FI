@@ -1,0 +1,50 @@
+model_config: uhm_fi_resnet50.yaml
+pretrained_checkpoint: ./output/pretrain_full_50epoch_20260731/best.pt
+data:
+  csv_path: ./data/downstream/cbis_ddsm_seg_patient_split_mask.csv
+  image_column: full_mammo_path
+  mask_column: roi_mask_path
+  split_column: split
+  train_split: train
+  validation_split: valid
+  test_split: test
+  train_fraction: 1.0
+  enforce_disjoint_paths: true
+  image:
+    resize: 512
+    crop_size: 512
+    horizontal_flip: 0.5
+    normalize: half
+  loader:
+    batch_size: 8
+    num_workers: 4
+    pin_memory: true
+    persistent_workers: true
+    prefetch_factor: 2
+  cache_path_column: cache_path
+  cache_index_column: cache_index
+  mask_cache_path_column: mask_cache_path
+  mask_cache_index_column: mask_cache_index
+task:
+  type: segmentation
+  num_classes: 1
+  protocol: fine_tune
+  decoder_channels: 256
+  segmentation_loss: bce_dice
+optimizer:
+  name: adamw
+  learning_rate: 0.0005
+  weight_decay: 1.0e-06
+scheduler:
+  name: plateau
+  plateau_factor: 0.5
+  plateau_patience: 5
+trainer:
+  output_dir: ./output/downstream/cbis_segmentation
+  epochs: 100
+  device: cuda
+  seed: 42
+  amp: true
+  gradient_clip: 0.25
+  early_stopping_patience: 20
+  log_every_steps: 50
